@@ -16,6 +16,9 @@
 			}
 		},
 		onLoad() {
+			// uni.setNavigationBarTitle({
+			// 	title: this.$t('index.navTitle')
+			// })
 			this.vusui.alert('常规信息框')
 		},
 		methods: {

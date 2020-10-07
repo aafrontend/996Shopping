@@ -1,6 +1,25 @@
 <script>
 export default {
 	onLaunch: function() {
+		var lan = 'zh';
+		try {
+			const res = uni.getSystemInfoSync();
+			lan = res.language;
+		} catch (e) {
+			console.log('error='+e);
+		}
+		switch (lan) {
+			case 'en':
+			this.$i18n.locale = 'en-US';break;
+			
+			case 'zh-Hans-CN':
+			case 'zh-CN':
+			case 'zh':this.$i18n.locale = 'zh-CN';break;
+			
+			default:this.$i18n.locale = 'zh-CN';break;
+		}
+		console.log('lan='+lan); 
+
 		console.log('App Launch');
 	},
 	onShow: function() {

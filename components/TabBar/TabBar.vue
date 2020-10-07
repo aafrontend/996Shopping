@@ -70,14 +70,14 @@
 			    		console.log(res.model) //手机型号
 			    		console.log(res.screenWidth) //屏幕宽度
 			    		console.log(res.screenHeight) //屏幕高度
-							that.codeheight = Math.round(res.screenHeight);
-							that.phoneModel =res.model
-							if(res.model.search('iPhone')){
-								that.isOverall = 0;
-							}else if(Math.round(res.screenHeight)>740){
-							 that.isOverall = 1;
-							}
-							console.log(that.isOverall);
+						that.codeheight = Math.round(res.screenHeight);
+						that.phoneModel =res.model
+						if(res.model.search('iPhone')){
+							that.isOverall = 0;
+						}else if(Math.round(res.screenHeight)>740){
+							that.isOverall = 1;
+						}
+						console.log(that.isOverall);
 			    	}
 			    });
 			} catch (e) {

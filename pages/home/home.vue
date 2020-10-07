@@ -12,7 +12,7 @@
 						<image src="/static/fdj_ico.png" mode=""></image>
 					</view>
 					<view class="hint">
-						<text class="max">搜索</text>
+						<text class="max">{{ $t("搜索") }}</text>
 						<text class="min">热门内容</text>
 					</view>
 				</view>
@@ -252,7 +252,7 @@ export default {
 	components:{
 		TabBar,
 		ClassifyData,
-		},
+	},
 	data(){
 		return{
 			swiperList: [
@@ -506,7 +506,7 @@ export default {
 		// #endif
 	},
 	onLoad() {
-		
+		this.getGoodsList();
 	},
 	onPageScroll(e){
 		let scrollTop = e.scrollTop;
@@ -596,6 +596,16 @@ export default {
 					})
 					break;
 			}
+		},
+		/**
+		 * 获取商品列表
+		 */
+		getGoodsList(){
+			this.$api.home.goodsList({}).then(ret => {
+				console.dir(ret)
+			}).catch(res => { // 失败进行的操作
+				console.dir(res)
+			});
 		}
 	}
 };
