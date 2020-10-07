@@ -601,7 +601,7 @@ export default {
 		 * 获取商品列表
 		 */
 		getGoodsList(){
-			this.$api.home.goodsList({}).then(ret => {
+			this.$api.home.goodsList({test:1}).then(ret => {
 				console.dir(ret)
 			}).catch(res => { // 失败进行的操作
 				console.dir(res)
