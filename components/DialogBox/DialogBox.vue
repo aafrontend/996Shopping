@@ -4,11 +4,23 @@
 			<view class="dialog-box">
 				<view class="title">{{options.title}}</view>
 				<view class="content" v-if="options.DialogType == 'input'">
-					<input type="text" v-model="options.value" :placeholder="options.placeholder">
+					<input type="text" v-model="options.value" :placeholder="options.placeholder" auto-focus="true">
 					<text class="iconfont icon-clear" @click.stop="onClear"></text>
 				</view>
 				<view class="inquiry" v-else-if="options.DialogType == 'inquiry'">
 					<text>{{options.content}}</text>
+				</view>
+				<view class="captcha" v-else-if="options.DialogType == 'captcha'">
+					<view class="content">
+						<input type="text" v-model="options.value" :placeholder="options.placeholder" auto-focus="true">
+						<text class="iconfont icon-clear" @click.stop="onClear"></text>
+					</view>
+					<view class="image" v-if="options.captcha.type == 'image'" @tap="refreshCaptcha">
+						<image :src="options.captcha.url" :style="'height:'+options.captcha.height+';width:'+options.captcha.width" mode="widthFix"></image>
+					</view>
+					<view v-else>
+						<text>unsuppored</text>
+					</view>
 				</view>
 				<view class="operation-btn">
 					<view class="btn" @click="onCancel">
@@ -41,6 +53,7 @@
 				resolve: '',
 				reject: '',
 				promise: '',
+				reopened: false,
 				// 配置
 				options:{
 					// 提示标题
@@ -53,6 +66,14 @@
 					DialogType: 'input',
 					// 动画类型
 					animation: 0,
+					// 验证码设置
+					captcha: {
+						type: 'image',
+						width: '200rpx',
+						height: '80rpx',
+						url: '',
+						id: ''
+					}
 				},
 			};
 		},
@@ -88,24 +109,29 @@
 			confirm(options) {
 				this.AnIndex = options.animation||0;
 				this.AnIdx = options.animation||0;
-				this.options = {
-					// 提示标题
-					title: options.title||'提示',
-					// 内容
-					content: options.content||'',
-					// 提示内容
-					placeholder: options.placeholder||'请输入内容',
-					// 提示框类型
-					DialogType: options.DialogType||'input',
-					// 动画类型
-					animation: options.animation||0,
-					// input输入的值
-					value: options.value||'',
-				};
+				// 提示标题
+				this.options.title = options.title||'提示';
+				// 内容
+				this.options.content = options.content||'';
+				// 提示内容
+				this.options.placeholder = options.placeholder||'请输入内容';
+				// 提示框类型
+				this.options.DialogType = options.DialogType||'input';
+				// 动画类型
+				this.options.animation = options.animation||0;
+				// input输入的值
+				this.options.value= options.value||'';
+				if(this.options.DialogType=='captcha'){
+					this.options.captcha.type = options.captcha.type||'image';
+					this.options.captcha.width = options.captcha.width||'200rpx';
+					this.options.captcha.height = options.captcha.height||'80rpx';
+					this.options.captcha.url = options.captcha.url||'';
+					this.options.captcha.id = options.captcha.id||'';
+				}
 				this.show();
 				this.promise = new Promise((resolve, reject) => {
-						this.resolve = resolve;
-						this.reject = reject;
+					this.resolve = resolve;
+					this.reject = reject;
 				});
 				return this.promise; //返回promise对象,给父级组件调用
 			},
@@ -113,6 +139,10 @@
 			 * 显示
 			 */
 			show(callback){
+				if(this.isShow){
+					this.isShow = false;
+					this.reopened = true;
+				}
 				this.isShow = true;
 			},
 			/**
@@ -121,7 +151,11 @@
 			hide(){
 				this.AnIdx = 1;
 				this.SetTime = setTimeout(() => {
-					this.isShow = false;
+					if(!this.reopened) {
+						this.isShow = false;
+					}else{
+						this.reopened = false;
+					}
 				}, 300);
 			},
 			/**
@@ -150,6 +184,18 @@
 					isConfirm: true,
 				});
 			},
+			refreshCaptcha(){
+				var url = this.options.captcha.url.replace(/([?&])_t=[^&]+(&|$)/,'$1');
+				url = url.replace(/[?&]+$/,'');
+				if(url.indexOf('?')>-1){
+					url+='&';
+				}else{
+					url+='?';
+				}
+				url+='_t='+Math.random();
+				this.options.captcha.url = url;
+				console.log('tap',this.options.captcha.url)
+			}
 		},
 	}
 </script>
